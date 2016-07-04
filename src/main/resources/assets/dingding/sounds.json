@@ -1,0 +1,36 @@
+{
+    "ding01":{
+        "category":"player",
+        "sounds":["dingding:ding01"]
+    },
+
+    "ding02":{
+        "category":"player",
+        "sounds":["dingding:ding02"]
+    },
+
+    "ding03":{
+        "category":"player",
+        "sounds":["dingding:ding03"]
+    },
+
+    "ding04":{
+        "category":"player",
+        "sounds":["dingding:ding04"]
+    },
+
+    "ding05":{
+        "category":"player",
+        "sounds":["dingding:ding05"]
+    },
+
+    "ding06":{
+        "category":"player",
+        "sounds":["dingding:ding06"]
+    },
+
+    "ding07":{
+        "category":"player",
+        "sounds":["dingding:ding07"]
+    }
+}
