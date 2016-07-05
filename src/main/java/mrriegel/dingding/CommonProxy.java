@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -11,6 +12,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class CommonProxy implements IGuiHandler {
 	public void preInit(FMLPreInitializationEvent event) {
@@ -23,6 +25,8 @@ public class CommonProxy implements IGuiHandler {
 
 	public void init(FMLInitializationEvent event) {
 		NetworkRegistry.INSTANCE.registerGuiHandler(DingDing.instance, this);
+		DingDing.DISPATCHER.registerMessage(GuiMessage.Handler.class, GuiMessage.class, 0, Side.SERVER);
+		DingDing.DISPATCHER.registerMessage(NotifyMessage.Handler.class, NotifyMessage.class, 1, Side.CLIENT);
 	}
 
 	public void postInit(FMLPostInitializationEvent event) {
@@ -35,9 +39,9 @@ public class CommonProxy implements IGuiHandler {
 
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		return new GuiDing();
+		return new GuiDing((TileDing) world.getTileEntity(new BlockPos(x, y, z)));
 	}
-	
-	public void playSound(int n){
+
+	public void playSound(int n) {
 	}
 }

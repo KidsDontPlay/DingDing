@@ -1,4 +1,7 @@
-{
+{"ding00":{
+        "category":"player",
+        "sounds":["dingding:ding00"]
+    },
     "ding01":{
         "category":"player",
         "sounds":["dingding:ding01"]

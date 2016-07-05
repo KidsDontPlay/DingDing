@@ -1,5 +1,6 @@
 package mrriegel.dingding;
 
+import java.awt.Color;
 import java.util.Set;
 
 import mrriegel.dingding.ClientProxy.Area;
@@ -21,6 +22,8 @@ public class TileDing extends TileEntity {
 	int sound = 0;
 	String show;
 	Area area = Area.TL;
+	double color;
+	boolean on;
 
 	@Override
 	public NBTTagCompound getUpdateTag() {
@@ -52,6 +55,8 @@ public class TileDing extends TileEntity {
 		show = compound.getString("show");
 		if (compound.hasKey("area"))
 			area = Area.valueOf(compound.getString("area"));
+		color = compound.getDouble("color");
+		on=compound.getBoolean("on");
 		super.readFromNBT(compound);
 	}
 
@@ -62,7 +67,9 @@ public class TileDing extends TileEntity {
 		compound.setInteger("sound", sound);
 		compound.setString("show", show);
 		compound.setString("area", area.toString());
+		compound.setDouble("color", color);
+		compound.setBoolean("on", on);
 		return compound;
 	}
-
+	
 }

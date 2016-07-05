@@ -1,25 +1,23 @@
 package mrriegel.dingding;
 
-import java.util.List;
+import javax.annotation.Nullable;
 
-import mrriegel.dingding.ClientProxy.Area;
-import mrriegel.dingding.ClientProxy.TextElement;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 public class BlockDing extends BlockContainer {
@@ -32,6 +30,7 @@ public class BlockDing extends BlockContainer {
 		this.setUnlocalizedName(getRegistryName().toString());
 	}
 
+	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.MODEL;
 	}
@@ -39,6 +38,23 @@ public class BlockDing extends BlockContainer {
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
 		return new TileDing();
+	}
+
+	@Override
+	public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block blockIn) {
+		super.neighborChanged(state, worldIn, pos, blockIn);
+		if (worldIn.isRemote)
+			return;
+		TileEntity tileentity = worldIn.getTileEntity(pos);
+		if (tileentity instanceof TileDing) {
+			TileDing tile = (TileDing) tileentity;
+			boolean power = worldIn.isBlockPowered(pos);
+			if (!tile.on && power) {
+				tile.on = true;
+				DingDing.notifyPlayers(tile);
+			} else if (!power)
+				tile.on = false;
+		}
 	}
 
 	@Override
@@ -50,12 +66,18 @@ public class BlockDing extends BlockContainer {
 	}
 
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-		if (worldIn.getTileEntity(pos) instanceof TileDing && worldIn.isRemote) {
-			DingDing.proxy.playSound(3);
-			ClientProxy.add(new TextElement(new Object() + "", 100, Area.values()[worldIn.rand.nextInt(Area.values().length)]));
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+		TileEntity tileentity = worldIn.getTileEntity(pos);
+		if (tileentity instanceof TileDing) {
+			if (playerIn.isSneaking() && !worldIn.isRemote) {
+				if (((TileDing) tileentity).players.add(playerIn.getDisplayNameString()))
+					playerIn.addChatMessage(new TextComponentString("Added"));
+			} else
+				playerIn.openGui(DingDing.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
+			return true;
+		} else {
+			return true;
 		}
-		return true;
 	}
 
 }
