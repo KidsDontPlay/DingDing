@@ -1,11 +1,11 @@
 package mrriegel.dingding;
 
+import java.awt.Color;
 import java.io.IOException;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.client.config.GuiSlider;
 
 import org.lwjgl.input.Keyboard;
@@ -30,7 +30,7 @@ public class GuiDing extends GuiScreen {
 		areaBtn.displayString = tile.area.getName();
 		slide.displayString = "Color";
 		tile.color = slide.sliderValue;
-		showTextField.setTextColor(DingDing.getColor(tile.color).getRGB());
+		showTextField.setTextColor(Color.getHSBColor((float) tile.color, 1f, 1f).getRGB());
 
 	}
 
@@ -41,7 +41,7 @@ public class GuiDing extends GuiScreen {
 		this.buttonList.add(this.playBtn = new GuiButton(4, this.width / 2 - 33, 80, 30, 20, "Play"));
 		this.buttonList.add(this.soundBtn = new GuiButton(5, this.width / 2 - 50 - 100 - 4, 80, 100, 20, ""));
 		this.buttonList.add(this.areaBtn = new GuiButton(6, this.width / 2 - 50 - 100 - 4, 120, 70, 20, ""));
-		this.buttonList.add(this.slide = new GuiSlider(0, this.width / 2 - 33, 120, 100, 20, "Color", "", 0, 360, 0, false, false));
+		this.buttonList.add(this.slide = new GuiSlider(0, this.width / 2 - 63, 120, 120, 20, "Color", "", 0, 360, 0, false, false));
 		this.slide.sliderValue = tile.color;
 		this.showTextField = new GuiTextField(2, this.fontRendererObj, this.width / 2 - 150, 50, 300, 20);
 		this.showTextField.setMaxStringLength(2500);
@@ -97,10 +97,12 @@ public class GuiDing extends GuiScreen {
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		this.drawDefaultBackground();
 		this.showTextField.drawTextBox();
-		// this.drawString(fontRendererObj, "muselmann", this.width/2, 150,
-		// tile.getColor().getRGB());
-
 		super.drawScreen(mouseX, mouseY, partialTicks);
+	}
+
+	@Override
+	public boolean doesGuiPauseGame() {
+		return false;
 	}
 
 }

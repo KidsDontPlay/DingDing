@@ -6,9 +6,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -26,11 +23,14 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
 public class ClientProxy extends CommonProxy {
 
 	public static Minecraft mc;
 	public static List<SoundEvent> sounds;
-	public static Set<TextElement> texts;
+	public Set<TextElement> texts;
 
 	@Override
 	public void preInit(FMLPreInitializationEvent event) {
@@ -60,12 +60,28 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void playSound(int n) {
 		super.playSound(n);
-		mc.thePlayer.playSound(sounds.get(n % sounds.size()), .9f, 1);
+		mc.thePlayer.playSound(sounds.get(n % sounds.size()), ConfigHandler.volume, 1);
+	}
+
+	@Override
+	public void addMessage(TextElement e) {
+		super.addMessage(e);
+		removeDouble(e.area);
+		texts.add(e);
+	}
+
+	void removeDouble(Area a) {
+		Iterator<TextElement> it = texts.iterator();
+		while (it.hasNext()) {
+			TextElement el = it.next();
+			if (el.area == a)
+				it.remove();
+		}
 	}
 
 	@SubscribeEvent
 	public void render(RenderGameOverlayEvent.Pre event) {
-		if (event.getType() == ElementType.TEXT && mc.theWorld.getTotalWorldTime() / 10 % 3 != 0) {
+		if (event.getType() == ElementType.TEXT && (!ConfigHandler.blinkingText || mc.theWorld.getTotalWorldTime() / 10 % 3 != 0)) {
 			for (TextElement el : texts) {
 				int diff = 15;
 				int color = el.color.getRGB();
@@ -91,20 +107,6 @@ public class ClientProxy extends CommonProxy {
 
 			}
 
-		}
-	}
-
-	public static void add(TextElement k) {
-		removeDouble(k.area);
-		texts.add(k);
-	}
-
-	static void removeDouble(Area a) {
-		Iterator<TextElement> it = texts.iterator();
-		while (it.hasNext()) {
-			TextElement el = it.next();
-			if (el.area == a)
-				it.remove();
 		}
 	}
 
@@ -149,7 +151,7 @@ public class ClientProxy extends CommonProxy {
 			super();
 			this.text = text;
 			this.area = area;
-			this.cool = 150;
+			this.cool = ConfigHandler.textDuration * 40;
 			this.id = new Random().nextInt();
 			this.color = color;
 		}

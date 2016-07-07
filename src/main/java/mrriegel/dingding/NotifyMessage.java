@@ -1,10 +1,13 @@
 package mrriegel.dingding;
 
 import io.netty.buffer.ByteBuf;
+
+import java.awt.Color;
+
 import mrriegel.dingding.ClientProxy.Area;
 import mrriegel.dingding.ClientProxy.TextElement;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -33,7 +36,7 @@ public class NotifyMessage implements IMessage {
 		this.sound = buf.readInt();
 		this.color = buf.readDouble();
 		this.show = ByteBufUtils.readUTF8String(buf);
-		this.area = area.valueOf(ByteBufUtils.readUTF8String(buf));
+		this.area = Area.valueOf(ByteBufUtils.readUTF8String(buf));
 	}
 
 	@Override
@@ -51,7 +54,11 @@ public class NotifyMessage implements IMessage {
 			Minecraft.getMinecraft().addScheduledTask(new Runnable() {
 				@Override
 				public void run() {
-					ClientProxy.add(new TextElement(message.show, message.area, DingDing.getColor(message.color)));
+					if (!message.show.isEmpty()) {
+						DingDing.proxy.addMessage(new TextElement(message.show, message.area, Color.getHSBColor((float) message.color, 1f, 1f)));
+						if (ConfigHandler.inChat)
+							Minecraft.getMinecraft().thePlayer.addChatMessage(new TextComponentString(message.show));
+					}
 					DingDing.proxy.playSound(message.sound);
 				}
 			});

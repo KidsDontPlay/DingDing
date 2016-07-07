@@ -1,10 +1,11 @@
 package mrriegel.dingding;
 
-import java.awt.Color;
 import java.util.Set;
 
 import mrriegel.dingding.ClientProxy.Area;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -20,7 +21,7 @@ public class TileDing extends TileEntity {
 
 	Set<String> players = Sets.newHashSet();
 	int sound = 0;
-	String show;
+	String show="";
 	Area area = Area.TL;
 	double color;
 	boolean on;
@@ -56,7 +57,7 @@ public class TileDing extends TileEntity {
 		if (compound.hasKey("area"))
 			area = Area.valueOf(compound.getString("area"));
 		color = compound.getDouble("color");
-		on=compound.getBoolean("on");
+		on = compound.getBoolean("on");
 		super.readFromNBT(compound);
 	}
 
@@ -71,5 +72,21 @@ public class TileDing extends TileEntity {
 		compound.setBoolean("on", on);
 		return compound;
 	}
-	
+
+	public void notifyPlayers() {
+		if (!getWorld().isRemote)
+			for (String s : players) {
+				EntityPlayer p = getPlayer(getWorld(), s);
+				if (p != null)
+					DingDing.DISPATCHER.sendTo(new NotifyMessage(sound, show, area, color), (EntityPlayerMP) p);
+			}
+	}
+
+	private EntityPlayer getPlayer(World world, String name) {
+		for (EntityPlayer p : world.playerEntities)
+			if (p.getDisplayNameString().equals(name))
+				return p;
+		return null;
+	}
+
 }

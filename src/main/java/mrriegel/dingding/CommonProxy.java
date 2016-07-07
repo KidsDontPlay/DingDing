@@ -1,5 +1,6 @@
 package mrriegel.dingding;
 
+import mrriegel.dingding.ClientProxy.TextElement;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
@@ -43,5 +44,8 @@ public class CommonProxy implements IGuiHandler {
 	}
 
 	public void playSound(int n) {
+	}
+	
+	public void addMessage(TextElement e){
 	}
 }
