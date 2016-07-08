@@ -21,7 +21,7 @@ public class TileDing extends TileEntity {
 
 	Set<String> players = Sets.newHashSet();
 	int sound = 0;
-	String show="";
+	String show = "";
 	Area area = Area.TL;
 	double color;
 	boolean on;

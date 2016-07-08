@@ -45,7 +45,7 @@ public class ClientProxy extends CommonProxy {
 		mc = Minecraft.getMinecraft();
 		sounds = Lists.newArrayList();
 		texts = Sets.newHashSet();
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 12; i++) {
 			ResourceLocation r = new ResourceLocation("dingding:ding" + String.format("%02d", i));
 			GameRegistry.register(new SoundEvent(r), r);
 			sounds.add(SoundEvent.REGISTRY.getObject(r));

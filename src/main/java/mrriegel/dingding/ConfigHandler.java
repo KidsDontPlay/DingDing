@@ -8,7 +8,7 @@ public class ConfigHandler {
 
 	public static Configuration config;
 
-	public static boolean blinkingText,inChat;
+	public static boolean blinkingText, inChat;
 	public static int textDuration;
 	public static float volume;
 

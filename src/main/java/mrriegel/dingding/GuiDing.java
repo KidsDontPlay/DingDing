@@ -16,7 +16,6 @@ public class GuiDing extends GuiScreen {
 	private GuiButton playBtn;
 	private GuiButton soundBtn;
 	private GuiButton areaBtn;
-
 	private GuiSlider slide;
 
 	public GuiDing(TileDing tile) {

@@ -45,7 +45,7 @@ public class CommonProxy implements IGuiHandler {
 
 	public void playSound(int n) {
 	}
-	
-	public void addMessage(TextElement e){
+
+	public void addMessage(TextElement e) {
 	}
 }

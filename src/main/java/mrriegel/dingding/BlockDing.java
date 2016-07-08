@@ -59,8 +59,9 @@ public class BlockDing extends BlockContainer {
 	@Override
 	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
 		super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
-		if (worldIn.getTileEntity(pos) instanceof TileDing && placer instanceof EntityPlayer) {
+		if (!worldIn.isRemote && worldIn.getTileEntity(pos) instanceof TileDing && placer instanceof EntityPlayer) {
 			((TileDing) worldIn.getTileEntity(pos)).players.add(((EntityPlayer) placer).getDisplayNameString());
+			placer.addChatMessage(new TextComponentString("Added " + ((EntityPlayer) placer).getDisplayNameString()));
 		}
 	}
 
@@ -70,7 +71,7 @@ public class BlockDing extends BlockContainer {
 		if (tileentity instanceof TileDing) {
 			playerIn.openGui(DingDing.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
 			if (!worldIn.isRemote && ((TileDing) tileentity).players.add(playerIn.getDisplayNameString())) {
-				playerIn.addChatMessage(new TextComponentString("Added "+playerIn.getDisplayNameString()));
+				playerIn.addChatMessage(new TextComponentString("Added " + playerIn.getDisplayNameString()));
 			}
 			return true;
 		} else {
