@@ -12,6 +12,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 
 import com.google.common.collect.Sets;
 import com.google.common.reflect.TypeToken;
@@ -82,10 +83,11 @@ public class TileDing extends TileEntity {
 			}
 	}
 
-	private EntityPlayer getPlayer(World world, String name) {
-		for (EntityPlayer p : world.playerEntities)
-			if (p.getDisplayNameString().equals(name))
-				return p;
+	private EntityPlayer getPlayer(World w, String name) {
+		for (WorldServer world : w.getMinecraftServer().worldServers)
+			for (EntityPlayer p : world.playerEntities)
+				if (p.getDisplayNameString().equals(name))
+					return p;
 		return null;
 	}
 
